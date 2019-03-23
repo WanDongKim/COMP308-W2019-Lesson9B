@@ -24,7 +24,23 @@ export class ContactDetailsComponent implements OnInit {
   ngOnInit() {
     this.title = this.activedRoute.snapshot.data.title;
     this.contact = new Contact();
+
+    this.activedRoute.params.subscribe(params =>{
+      this.contact._id = params.id;
+      console.log('Contact ID: ' + this.contact._id);
+
+    });
+
+    if(this.title === 'Edit Contact'){
+      this.getContact(this.contact);
+    }
   }
+  private getContact(contact:Contact):void{
+    this.contactListService.getContact(contact).subscribe(data =>{
+      this.contact = data.contact;
+    });
+  }
+
   private onDetailsPageSubmit():void{
     switch(this.title){
       case 'Add Contact':
@@ -34,11 +50,21 @@ export class ContactDetailsComponent implements OnInit {
           this.router.navigate(['/contact/contact-list']);
         } else {
           this.flashMessage.show('Add Contact Failed', {cssClass: 'alert-danger', timeOut: 3000});
+          this.router.navigate(['/contact/contact-list']);
         }
       });
       break;
 
       case 'Edit Contact':
+      this.contactListService.editContact(this.contact).subscribe(data => {
+        if(data.success){
+          this.flashMessage.show(data.msg, {cssClass: 'alert-success', timeOut: 3000});
+          this.router.navigate(['/contact/contact-list']);
+        } else {
+          this.flashMessage.show('Edit Contact Failed', {cssClass: 'alert-danger', timeOut: 3000});
+          this.router.navigate(['/contact/contact-list']);
+        }
+      });
       break;
     }
   }
