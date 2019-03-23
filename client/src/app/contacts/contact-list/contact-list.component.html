@@ -28,6 +28,7 @@
 
                       <td class="text-center">
                               <a routerLink="/contact/contact-list/delete/{{ contact._id }}"
+                                  (click)="onDeleteClick()"
                                   class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</a>
                               </td>
                   </tr>
